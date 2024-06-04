@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">FavoriteMovieApp</string>
+    <string name="activity_main_title">Cadastro de Filmes</string>
+    <string name="adapter_city_name">Categoria:</string>
+    <string name="adapter_city_people">Quantidade de filmes:</string>
+    <string name="welcome_text">Bem-vindo ao Filmes Favoritos, o aplicativo que transforma a maneira como você organiza e planeja suas sessões de cinema. Seja você um cinéfilo apaixonado, um estudante de cinema ou apenas alguém que adora assistir filmes no tempo livre, o Filmes Favoritos é a ferramenta ideal para você.</string>
+    <string name="welcome_title">Bem-Vindo!</string>
+    <string name="start_button">Começar</string>
+    <string name="new_category_text">Nova categoria</string>
+    <string name="category_name_label">Nome da categoria:</string>
+</resources>

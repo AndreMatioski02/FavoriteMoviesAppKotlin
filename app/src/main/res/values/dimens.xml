@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="title">20sp</dimen>
+    <dimen name="label">20sp</dimen>
+    <dimen name="cell_margin">10dp</dimen>
+    <dimen name="adapter_city_label_width">120dp</dimen>
+</resources>
