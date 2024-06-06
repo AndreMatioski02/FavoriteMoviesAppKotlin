@@ -84,7 +84,7 @@ class AddCategory : AppCompatActivity() {
     fun showMessage(message: String) {
 
         AlertDialog.Builder(this).run {
-            title = "Cities App"
+            title = "FavoriteMoviesApp"
             setMessage(message)
             setPositiveButton("Ok", null)
             show()

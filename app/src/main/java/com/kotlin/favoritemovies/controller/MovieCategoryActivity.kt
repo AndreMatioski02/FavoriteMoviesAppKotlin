@@ -56,6 +56,7 @@ class MovieCategoryActivity : AppCompatActivity() {
         binding = ActivityMovieCategoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        DataStore.setContext(this)
         loadRecycleView()
         configureFab()
         configureGesture()
@@ -79,9 +80,9 @@ class MovieCategoryActivity : AppCompatActivity() {
 
         LinearLayoutManager(this).apply {
             this.orientation = LinearLayoutManager.VERTICAL
-            binding.rcvCities.layoutManager = this
+            binding.rcvCategories.layoutManager = this
             adapter = CategoryAdapter(DataStore.categories).apply {
-                binding.rcvCities.adapter = this
+                binding.rcvCategories.adapter = this
             }
         }
     }
@@ -91,9 +92,9 @@ class MovieCategoryActivity : AppCompatActivity() {
         gesture = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
 
             override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-                binding.rcvCities.findChildViewUnder(e.x, e.y).run {
+                binding.rcvCategories.findChildViewUnder(e.x, e.y).run {
                     this?.let { child ->
-                        binding.rcvCities.getChildAdapterPosition(child).apply {
+                        binding.rcvCategories.getChildAdapterPosition(child).apply {
                             Intent(this@MovieCategoryActivity, MovieListActivity::class.java).run {
                                 putExtra("position", this@apply)
                                 editCategoryForResult.launch(this)
@@ -107,9 +108,9 @@ class MovieCategoryActivity : AppCompatActivity() {
             override fun onLongPress(e: MotionEvent) {
                 super.onLongPress(e)
 
-                binding.rcvCities.findChildViewUnder(e.x, e.y).run {
+                binding.rcvCategories.findChildViewUnder(e.x, e.y).run {
                     this?.let { child ->
-                        binding.rcvCities.getChildAdapterPosition(child).apply {
+                        binding.rcvCategories.getChildAdapterPosition(child).apply {
                             val category = DataStore.getCategory(this)
                             AlertDialog.Builder(this@MovieCategoryActivity).run {
                                 setMessage("Tem certeza que deseja remover esta categoria?")
@@ -130,7 +131,7 @@ class MovieCategoryActivity : AppCompatActivity() {
 
     private fun configureRecycleViewEvents() {
 
-        binding.rcvCities.addOnItemTouchListener(object: OnItemTouchListener {
+        binding.rcvCategories.addOnItemTouchListener(object: OnItemTouchListener {
 
             override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
                 rv.findChildViewUnder(e.x, e.y).apply {

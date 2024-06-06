@@ -44,7 +44,8 @@ class MovieListActivity : AppCompatActivity() {
     private fun setData(position: Int) {
 
         DataStore.getCategory(position).run {
-            binding.movieCategory.setText(this.categoryName)
+            val text = "${ this.categoryName } - ${ this.id }"
+            binding.movieCategory.setText(text)
         }
     }
 
