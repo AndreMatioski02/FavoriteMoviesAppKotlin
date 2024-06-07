@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
 import com.google.android.material.snackbar.Snackbar
 import com.kotlin.favoritemovies.databinding.ActivityMovieCategoryBinding
-import com.kotlin.favoritemovies.model.DataStore
+import com.kotlin.favoritemovies.model.category.CategoryDataStore
 import com.kotlin.favoritemovies.view.CategoryAdapter
 
 class MovieCategoryActivity : AppCompatActivity() {
@@ -56,7 +56,7 @@ class MovieCategoryActivity : AppCompatActivity() {
         binding = ActivityMovieCategoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        DataStore.setContext(this)
+        CategoryDataStore.setContext(this)
         loadRecycleView()
         configureFab()
         configureGesture()
@@ -81,7 +81,7 @@ class MovieCategoryActivity : AppCompatActivity() {
         LinearLayoutManager(this).apply {
             this.orientation = LinearLayoutManager.VERTICAL
             binding.rcvCategories.layoutManager = this
-            adapter = CategoryAdapter(DataStore.categories).apply {
+            adapter = CategoryAdapter(CategoryDataStore.categories).apply {
                 binding.rcvCategories.adapter = this
             }
         }
@@ -111,11 +111,11 @@ class MovieCategoryActivity : AppCompatActivity() {
                 binding.rcvCategories.findChildViewUnder(e.x, e.y).run {
                     this?.let { child ->
                         binding.rcvCategories.getChildAdapterPosition(child).apply {
-                            val category = DataStore.getCategory(this)
+                            val category = CategoryDataStore.getCategory(this)
                             AlertDialog.Builder(this@MovieCategoryActivity).run {
                                 setMessage("Tem certeza que deseja remover esta categoria?")
                                 setPositiveButton("Excluir") { _,_ ->
-                                    DataStore.removeCategory(this@apply)
+                                    CategoryDataStore.removeCategory(this@apply)
                                     Toast.makeText(this@MovieCategoryActivity, "Categoria ${category.categoryName} removida com sucesso!!!", Toast.LENGTH_LONG).show()
                                     adapter.notifyDataSetChanged()
                                 }

@@ -1,25 +1,19 @@
-package com.kotlin.favoritemovies.model
+package com.kotlin.favoritemovies.model.category
 
 import android.content.Context
 import android.util.Log
 
-object DataStore {
+object CategoryDataStore {
 
     val categories: MutableList<Category> = arrayListOf()
-    val movies: MutableList<Movie> = arrayListOf()
-    private var database: Database? = null
+    private var database: CategoryDatabase? = null
 
     fun setContext(context: Context) {
-        database = Database(context)
+        database = CategoryDatabase(context)
         database?.let { db ->
             categories.clear()
             categories.addAll(db.getAllCategories())
         }
-    }
-    init {
-        movies.add(Movie("Avatar", 4, "Ação", "Netflix"))
-        movies.add(Movie("Vingadores", 5, "Ação", "Amazon Prime Videos"))
-        movies.add(Movie("o Projeto Adam", 3, "Ação", "Apple TV"))
     }
 
     fun getCategory(position: Int): Category {
@@ -67,8 +61,8 @@ object DataStore {
             db.searchCategoriesWithName(searchText)
         }
 
-        this.categories.clear()
-        this.categories.addAll(cities)
+        categories.clear()
+        categories.addAll(cities)
 
         return true
     }

@@ -1,4 +1,4 @@
-package com.kotlin.favoritemovies.model
+package com.kotlin.favoritemovies.model.category
 
 class Category(
     var categoryName: String,

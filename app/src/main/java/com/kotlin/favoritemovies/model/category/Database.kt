@@ -1,4 +1,4 @@
-package com.kotlin.favoritemovies.model
+package com.kotlin.favoritemovies.model.category
 
 import android.content.ContentValues
 import android.content.Context
@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 
-class Database(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+class CategoryDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
         const val DATABASE_NAME = "favorite_movies.db"

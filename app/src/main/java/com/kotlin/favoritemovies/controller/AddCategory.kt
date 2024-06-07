@@ -6,8 +6,8 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import com.kotlin.favoritemovies.databinding.ActivityAddCategoryBinding
-import com.kotlin.favoritemovies.model.Category
-import com.kotlin.favoritemovies.model.DataStore
+import com.kotlin.favoritemovies.model.category.Category
+import com.kotlin.favoritemovies.model.category.CategoryDataStore
 
 class AddCategory : AppCompatActivity() {
 
@@ -63,7 +63,7 @@ class AddCategory : AppCompatActivity() {
 
     private fun setData(position: Int) {
 
-        DataStore.getCategory(position).run {
+        CategoryDataStore.getCategory(position).run {
             binding.txtName.setText(this.categoryName)
         }
     }
@@ -71,9 +71,9 @@ class AddCategory : AppCompatActivity() {
     private fun saveCategory(category: Category) {
 
         if (position == -1)
-            DataStore.addCategory(category)
+            CategoryDataStore.addCategory(category)
         else
-            DataStore.editCategory(position, category)
+            CategoryDataStore.editCategory(position, category)
         Intent().run {
             putExtra("category", category.categoryName)
             setResult(RESULT_OK, this)

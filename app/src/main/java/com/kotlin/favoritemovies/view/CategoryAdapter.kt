@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.kotlin.favoritemovies.databinding.AdapterCategoryBinding
-import com.kotlin.favoritemovies.model.Category
+import com.kotlin.favoritemovies.model.category.Category
 
 class CategoryAdapter(var categories: MutableList<Category>) : RecyclerView.Adapter<CategoryAdapter.CategoryHolder>() {
 

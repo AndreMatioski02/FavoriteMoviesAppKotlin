@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kotlin.favoritemovies.databinding.ActivityMovieListBinding
-import com.kotlin.favoritemovies.model.DataStore
+import com.kotlin.favoritemovies.model.category.CategoryDataStore
 import com.kotlin.favoritemovies.view.MovieAdapter
 
 class MovieListActivity : AppCompatActivity() {
@@ -27,23 +27,23 @@ class MovieListActivity : AppCompatActivity() {
         }
 
         configureNavigateButton()
-        loadRecycleView()
+//        loadRecycleView()
     }
 
-    private fun loadRecycleView() {
-
-        LinearLayoutManager(this).apply {
-            this.orientation = LinearLayoutManager.VERTICAL
-            binding.rcvMovies.layoutManager = this
-            adapter = MovieAdapter(DataStore.movies).apply {
-                binding.rcvMovies.adapter = this
-            }
-        }
-    }
+//    private fun loadRecycleView() {
+//
+//        LinearLayoutManager(this).apply {
+//            this.orientation = LinearLayoutManager.VERTICAL
+//            binding.rcvMovies.layoutManager = this
+//            adapter = MovieAdapter(CategoryDataStore.movies).apply {
+//                binding.rcvMovies.adapter = this
+//            }
+//        }
+//    }
 
     private fun setData(position: Int) {
 
-        DataStore.getCategory(position).run {
+        CategoryDataStore.getCategory(position).run {
             val text = "${ this.categoryName } - ${ this.id }"
             binding.movieCategory.setText(text)
         }
