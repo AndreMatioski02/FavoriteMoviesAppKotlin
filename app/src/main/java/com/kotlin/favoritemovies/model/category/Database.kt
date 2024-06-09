@@ -10,7 +10,7 @@ class CategoryDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
 
     companion object {
         const val DATABASE_NAME = "favorite_movies.db"
-        const val DATABASE_VERSION = 1
+        const val DATABASE_VERSION = 3
 
         const val DB_TABLE_CATEGORY = "category"
 
@@ -41,7 +41,19 @@ class CategoryDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        TODO("Not yet implemented")
+        val database = db ?: return
+
+        database.beginTransaction()
+
+        try {
+            database.execSQL(SQL_CREATE_CATEGORIES)
+            database.setTransactionSuccessful()
+        } catch (e: Exception) {
+            e.localizedMessage?.let { Log.d("FavoriteMovieApp", it) }
+        } finally {
+            database.endTransaction()
+        }
+
     }
 
     fun getAllCategories(): MutableList<Category> {

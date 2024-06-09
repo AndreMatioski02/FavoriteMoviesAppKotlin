@@ -49,20 +49,20 @@ object CategoryDataStore {
         if(count > 0) {
             categories.removeAt(position)
         } else {
-            Log.d("CitiesApp", "Operação falhou: remoção de dados")
+            Log.d("FavoriteMoviesApp", "Operação falhou: remoção de dados")
         }
     }
 
     fun searchCategories(searchText: String): Boolean {
         val db = database ?: return false
-        val cities = if(searchText.isEmpty()) {
+        val categories = if(searchText.isEmpty()) {
             db.getAllCategories()
         } else {
             db.searchCategoriesWithName(searchText)
         }
 
         categories.clear()
-        categories.addAll(cities)
+        categories.addAll(categories)
 
         return true
     }

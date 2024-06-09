@@ -11,7 +11,7 @@ class MovieDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
 
     companion object {
         const val DATABASE_NAME = "favorite_movies.db"
-        const val DATABASE_VERSION = 1
+        const val DATABASE_VERSION = 3
 
         const val DB_TABLE_MOVIE = "movie"
         const val DB_FIELD_ID = "id"
@@ -20,7 +20,7 @@ class MovieDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
         const val DB_FIELD_PLATFORM_TO_WATCH = "platformToWatch"
         const val DB_FIELD_CATEGORY_ID = "categoryId"
 
-        val SQL_CREATE_MOVIES = "CREATE TABLE IF NOT EXISTS $DB_TABLE_MOVIE (" +
+        const val SQL_CREATE_MOVIES = "CREATE TABLE IF NOT EXISTS $DB_TABLE_MOVIE (" +
                 "$DB_FIELD_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "$DB_FIELD_MOVIE_NAME TEXT, " +
                 "$DB_FIELD_RATE INTEGER, " +
@@ -38,7 +38,7 @@ class MovieDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
             database.execSQL(SQL_CREATE_MOVIES)
             database.setTransactionSuccessful()
         } catch (e: Exception) {
-            e.localizedMessage?.let { Log.d("FavoriteMovieApp", it) }
+            Log.d("FavoriteMovieApp", e.localizedMessage)
         } finally {
             database.endTransaction()
         }
@@ -46,17 +46,31 @@ class MovieDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        TODO("Not yet implemented")
+        val database = db ?: return
+
+        database.beginTransaction()
+
+        try {
+            database.execSQL(SQL_CREATE_MOVIES)
+            database.setTransactionSuccessful()
+        } catch (e: Exception) {
+            Log.d("FavoriteMovieApp", e.localizedMessage)
+        } finally {
+            database.endTransaction()
+        }
     }
 
-    fun getAllMovies(): MutableList<Movie> {
+    fun getMoviesByCategoryId(categoryId: Long): MutableList<Movie> {
         val movies = mutableListOf<Movie>()
         val db = readableDatabase
+        val selection = "$DB_FIELD_CATEGORY_ID = ?"
+        val selectionArgs =  arrayOf(categoryId.toString())
+
         val cursor = db.query(
             DB_TABLE_MOVIE,
             null,
-            null,
-            null,
+            selection,
+            selectionArgs,
             null,
             null,
             DB_FIELD_MOVIE_NAME
@@ -147,11 +161,11 @@ class MovieDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
         return count
     }
 
-    fun searchMoviesWithName(searchText: String): MutableList<Movie> {
+    fun searchMoviesWithName(searchText: String, categoryId: Long): MutableList<Movie> {
         val movies = mutableListOf<Movie>()
         val db = readableDatabase
-        val selection = "$DB_FIELD_MOVIE_NAME LIKE ?"
-        val selectionArgs =  arrayOf("%$searchText%")
+        val selection = "$DB_FIELD_MOVIE_NAME LIKE ? AND $DB_FIELD_CATEGORY_ID = ?"
+        val selectionArgs = arrayOf("%$searchText%", categoryId.toString())
 
         val cursor = db.query(
             DB_TABLE_MOVIE,
@@ -169,9 +183,9 @@ class MovieDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
                 val movieName = getString(getColumnIndexOrThrow(DB_FIELD_MOVIE_NAME))
                 val rate = getInt(getColumnIndexOrThrow(DB_FIELD_RATE))
                 val platformToWatch = getString(getColumnIndexOrThrow(DB_FIELD_PLATFORM_TO_WATCH))
-                val categoryId = getLong(getColumnIndexOrThrow(DB_FIELD_CATEGORY_ID))
+                val responseCategoryId = getLong(getColumnIndexOrThrow(DB_FIELD_CATEGORY_ID))
 
-                val movie = Movie(movieName, rate, platformToWatch, categoryId, id)
+                val movie = Movie(movieName, rate, platformToWatch, responseCategoryId, id)
                 movies.add(movie)
             }
         }

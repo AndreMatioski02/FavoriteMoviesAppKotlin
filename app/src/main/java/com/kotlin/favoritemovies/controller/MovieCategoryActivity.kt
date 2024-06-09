@@ -36,20 +36,6 @@ class MovieCategoryActivity : AppCompatActivity() {
         }
     }
 
-    private var editCategoryForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == RESULT_OK) {
-            result.data?.let { intent ->
-                Snackbar.make(
-                    this,
-                    binding.layout,
-                    "Categoria ${intent.getStringExtra("category")} alterada com sucesso!!!",
-                    Snackbar.LENGTH_LONG
-                ).show()
-                adapter.notifyDataSetChanged()
-            }
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -95,10 +81,10 @@ class MovieCategoryActivity : AppCompatActivity() {
                 binding.rcvCategories.findChildViewUnder(e.x, e.y).run {
                     this?.let { child ->
                         binding.rcvCategories.getChildAdapterPosition(child).apply {
-                            Intent(this@MovieCategoryActivity, MovieListActivity::class.java).run {
+                            val intent = Intent(this@MovieCategoryActivity, MovieListActivity::class.java).run {
                                 putExtra("position", this@apply)
-                                editCategoryForResult.launch(this)
                             }
+                            startActivity(intent)
                         }
                     }
                 }
@@ -144,7 +130,7 @@ class MovieCategoryActivity : AppCompatActivity() {
         })
     }
 
-    private fun addCity() {
+    private fun addCategory() {
 
         Intent(this, AddCategory::class.java).run {
             addCategoryForResult.launch(this)
@@ -153,7 +139,7 @@ class MovieCategoryActivity : AppCompatActivity() {
 
     private fun configureFab() {
         binding.fab.setOnClickListener {
-            addCity()
+            addCategory()
         }
     }
 }

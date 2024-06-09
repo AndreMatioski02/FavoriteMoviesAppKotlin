@@ -8,4 +8,8 @@
     <string name="start_button">Começar</string>
     <string name="new_category_text">Nova categoria</string>
     <string name="category_name_label">Nome da categoria:</string>
+    <string name="new_movie_text">Novo filme</string>
+    <string name="movie_name">Nome do filme</string>
+    <string name="movie_rate">Classificação (opcional)</string>
+    <string name="movie_platform">Onde assisitir?</string>
 </resources>
