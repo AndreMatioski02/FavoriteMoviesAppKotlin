@@ -69,7 +69,7 @@ class AddMovie : AppCompatActivity() {
 
         MovieDataStore.getMovie(position).run {
             binding.txtMovieName.setText(this.movieName)
-            binding.txtRate.setText(this.rate)
+            binding.txtRate.setText(this.rate.toString())
             binding.txtPlatform.setText(this.platformToWatch)
         }
     }
