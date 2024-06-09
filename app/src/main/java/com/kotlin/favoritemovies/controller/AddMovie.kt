@@ -53,14 +53,16 @@ class AddMovie : AppCompatActivity() {
 
     private fun getData(): Movie? {
 
+        val receivedCategoryIdParam = intent.getLongExtra("categoryId", -1)
+
         val movieName = binding.txtMovieName.text.toString()
         val movieRate = binding.txtRate.text.toString()
         val moviePlatform = binding.txtPlatform.text.toString()
 
-        if (movieName.isEmpty())
+        if (movieName.isEmpty() || moviePlatform.isEmpty())
             return null
 
-        return Movie(movieName, movieRate.toInt(), moviePlatform, 5)
+        return Movie(movieName, movieRate.toInt(), moviePlatform, receivedCategoryIdParam)
     }
 
     private fun setData(position: Int) {
@@ -73,13 +75,13 @@ class AddMovie : AppCompatActivity() {
     }
 
     private fun saveMovie(movie: Movie) {
-
         if (position == -1)
             MovieDataStore.addMovie(movie)
         else
             MovieDataStore.editMovie(position, movie)
         Intent().run {
             putExtra("movie", movie.movieName)
+            putExtra("position", intent.getLongExtra("categoryPosition", -1))
             setResult(RESULT_OK, this)
         }
         finish()

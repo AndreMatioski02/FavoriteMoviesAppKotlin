@@ -2,6 +2,7 @@ package com.kotlin.favoritemovies.controller
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -41,15 +42,18 @@ class MovieListActivity : AppCompatActivity() {
 
         intent.getIntExtra("position", -1).apply {
             position = this
-            if (position != -1)
+            if (position != -1) {
+                val categoryId = CategoryDataStore.getCategory(position).id
+
                 setData(position)
-                MovieDataStore.setContext(context, position.toLong())
+                MovieDataStore.setContext(context, categoryId)
+            }
         }
 
         loadRecycleView()
         configureNavigateButton()
         configureAddMovie()
-    }`
+    }
 
     private fun loadRecycleView() {
 
@@ -81,9 +85,14 @@ class MovieListActivity : AppCompatActivity() {
     }
 
     private fun addMovie() {
-        Intent(this, AddMovie::class.java).run {
-            addMovieForResult.launch(this)
+        val categoryId = CategoryDataStore.getCategory(position).id
+
+        val intent = Intent(this, AddMovie::class.java).apply {
+            putExtra("categoryId", categoryId)
+            putExtra("categoryPosition", position)
         }
+
+        addMovieForResult.launch(intent)
     }
 
     private fun configureAddMovie() {
