@@ -2,7 +2,6 @@ package com.kotlin.favoritemovies.controller
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.widget.Toast
@@ -55,21 +54,20 @@ class MovieListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val context = this
-
         binding = ActivityMovieListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        intent.getIntExtra("position", -1).apply {
-            position = this
-            if (position != -1) {
-                val categoryId = CategoryDataStore.getCategory(position).id
-
-                setData(position)
-                MovieDataStore.setContext(context, categoryId)
-            }
+        position = intent.getIntExtra("position", -1).run {
+            this
         }
 
+        if (position != -1) {
+            setData(position)
+        }
+
+        val categoryId = CategoryDataStore.getCategory(position).id
+
+        MovieDataStore.setContext(this, categoryId)
         loadRecycleView()
         configureNavigateButton()
         configureAddMovie()

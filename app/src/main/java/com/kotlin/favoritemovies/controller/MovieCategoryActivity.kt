@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
 import com.google.android.material.snackbar.Snackbar
 import com.kotlin.favoritemovies.databinding.ActivityMovieCategoryBinding
 import com.kotlin.favoritemovies.model.category.CategoryDataStore
+import com.kotlin.favoritemovies.model.movie.MovieDatabase
 import com.kotlin.favoritemovies.view.CategoryAdapter
 
 class MovieCategoryActivity : AppCompatActivity() {
@@ -81,9 +82,8 @@ class MovieCategoryActivity : AppCompatActivity() {
                 binding.rcvCategories.findChildViewUnder(e.x, e.y).run {
                     this?.let { child ->
                         binding.rcvCategories.getChildAdapterPosition(child).apply {
-                            val intent = Intent(this@MovieCategoryActivity, MovieListActivity::class.java).run {
-                                putExtra("position", this@apply)
-                            }
+                            val intent = Intent(this@MovieCategoryActivity, MovieListActivity::class.java)
+                            intent.putExtra("position", this@apply)
                             startActivity(intent)
                         }
                     }

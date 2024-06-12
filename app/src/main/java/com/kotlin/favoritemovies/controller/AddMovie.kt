@@ -62,7 +62,7 @@ class AddMovie : AppCompatActivity() {
         if (movieName.isEmpty() || moviePlatform.isEmpty())
             return null
 
-        return Movie(movieName, movieRate.toInt(), moviePlatform, receivedCategoryIdParam)
+        return Movie(movieName, movieRate.toInt(), moviePlatform, false, receivedCategoryIdParam)
     }
 
     private fun setData(position: Int) {

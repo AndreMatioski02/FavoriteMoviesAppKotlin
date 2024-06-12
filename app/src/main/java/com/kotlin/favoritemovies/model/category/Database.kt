@@ -9,8 +9,8 @@ import android.util.Log
 class CategoryDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
-        const val DATABASE_NAME = "favorite_movies.db"
-        const val DATABASE_VERSION = 3
+        const val DATABASE_NAME = "movies.db"
+        const val DATABASE_VERSION = 1
 
         const val DB_TABLE_CATEGORY = "category"
 
@@ -48,12 +48,12 @@ class CategoryDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         try {
             database.execSQL(SQL_CREATE_CATEGORIES)
             database.setTransactionSuccessful()
+
         } catch (e: Exception) {
             e.localizedMessage?.let { Log.d("FavoriteMovieApp", it) }
         } finally {
             database.endTransaction()
         }
-
     }
 
     fun getAllCategories(): MutableList<Category> {

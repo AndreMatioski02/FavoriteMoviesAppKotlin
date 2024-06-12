@@ -10,14 +10,15 @@ import com.kotlin.favoritemovies.model.category.CategoryDatabase
 class MovieDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
-        const val DATABASE_NAME = "favorite_movies.db"
-        const val DATABASE_VERSION = 3
+        const val DATABASE_NAME = "category.db"
+        const val DATABASE_VERSION = 1
 
         const val DB_TABLE_MOVIE = "movie"
         const val DB_FIELD_ID = "id"
         const val DB_FIELD_MOVIE_NAME = "movieName"
         const val DB_FIELD_RATE = "rate"
         const val DB_FIELD_PLATFORM_TO_WATCH = "platformToWatch"
+        const val DB_FIELD_WATCHED = "watched"
         const val DB_FIELD_CATEGORY_ID = "categoryId"
 
         const val SQL_CREATE_MOVIES = "CREATE TABLE IF NOT EXISTS $DB_TABLE_MOVIE (" +
@@ -25,6 +26,7 @@ class MovieDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
                 "$DB_FIELD_MOVIE_NAME TEXT, " +
                 "$DB_FIELD_RATE INTEGER, " +
                 "$DB_FIELD_PLATFORM_TO_WATCH TEXT, " +
+                "$DB_FIELD_WATCHED INTEGER, " +
                 "$DB_FIELD_CATEGORY_ID INTEGER, " +
                 "FOREIGN KEY($DB_FIELD_CATEGORY_ID) REFERENCES ${CategoryDatabase.DB_TABLE_CATEGORY}(${CategoryDatabase.DB_FIELD_ID}));"
     }
@@ -42,7 +44,6 @@ class MovieDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
         } finally {
             database.endTransaction()
         }
-
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
@@ -81,9 +82,10 @@ class MovieDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
                 val movieName = getString(getColumnIndexOrThrow(DB_FIELD_MOVIE_NAME))
                 val rate = getInt(getColumnIndexOrThrow(DB_FIELD_RATE))
                 val platformToWatch = getString(getColumnIndexOrThrow(DB_FIELD_PLATFORM_TO_WATCH))
+                val watched = getInt(getColumnIndexOrThrow(DB_FIELD_WATCHED)) != 0
                 val categoryId = getLong(getColumnIndexOrThrow(DB_FIELD_CATEGORY_ID))
 
-                val movie = Movie(movieName, rate, platformToWatch, categoryId, id)
+                val movie = Movie(movieName, rate, platformToWatch, watched, categoryId, id)
                 movies.add(movie)
             }
         }
@@ -98,6 +100,7 @@ class MovieDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
             put(DB_FIELD_MOVIE_NAME, movie.movieName)
             put(DB_FIELD_RATE, movie.rate)
             put(DB_FIELD_PLATFORM_TO_WATCH, movie.platformToWatch)
+            put(DB_FIELD_WATCHED, false)
             put(DB_FIELD_CATEGORY_ID, movie.categoryId)
         }
 
@@ -121,6 +124,7 @@ class MovieDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
             put(DB_FIELD_MOVIE_NAME, movie.movieName)
             put(DB_FIELD_RATE, movie.rate)
             put(DB_FIELD_PLATFORM_TO_WATCH, movie.platformToWatch)
+            put(DB_FIELD_WATCHED, movie.watched)
             put(DB_FIELD_CATEGORY_ID, movie.categoryId)
         }
 
@@ -159,38 +163,6 @@ class MovieDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
         }
 
         return count
-    }
-
-    fun searchMoviesWithName(searchText: String, categoryId: Long): MutableList<Movie> {
-        val movies = mutableListOf<Movie>()
-        val db = readableDatabase
-        val selection = "$DB_FIELD_MOVIE_NAME LIKE ? AND $DB_FIELD_CATEGORY_ID = ?"
-        val selectionArgs = arrayOf("%$searchText%", categoryId.toString())
-
-        val cursor = db.query(
-            DB_TABLE_MOVIE,
-            null,
-            selection,
-            selectionArgs,
-            null,
-            null,
-            DB_FIELD_MOVIE_NAME
-        )
-
-        with(cursor) {
-            while (moveToNext()) {
-                val id = getLong(getColumnIndexOrThrow(DB_FIELD_ID))
-                val movieName = getString(getColumnIndexOrThrow(DB_FIELD_MOVIE_NAME))
-                val rate = getInt(getColumnIndexOrThrow(DB_FIELD_RATE))
-                val platformToWatch = getString(getColumnIndexOrThrow(DB_FIELD_PLATFORM_TO_WATCH))
-                val responseCategoryId = getLong(getColumnIndexOrThrow(DB_FIELD_CATEGORY_ID))
-
-                val movie = Movie(movieName, rate, platformToWatch, responseCategoryId, id)
-                movies.add(movie)
-            }
-        }
-
-        return movies
     }
 
 }

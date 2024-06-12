@@ -52,18 +52,4 @@ object MovieDataStore {
             Log.d("FavoriteMoviesApp", "Operação falhou: remoção de dados")
         }
     }
-
-    fun searchMovies(searchText: String, categoryId: Long): Boolean {
-        val db = database ?: return false
-        val movies = if(searchText.isEmpty()) {
-            db.getMoviesByCategoryId(categoryId)
-        } else {
-            db.searchMoviesWithName(searchText, categoryId)
-        }
-
-        movies.clear()
-        movies.addAll(movies)
-
-        return true
-    }
 }
