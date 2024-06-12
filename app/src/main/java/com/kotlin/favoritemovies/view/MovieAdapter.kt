@@ -22,6 +22,7 @@ class MovieAdapter(var movies: MutableList<Movie>) : RecyclerView.Adapter<MovieA
             holder.binding.txtMovieName.text = this.movieName
             holder.binding.txtRate.text = this.rate.toString()
             holder.binding.txtPlatformToWatch.text = this.platformToWatch
+            holder.binding.checkboxWatched.isChecked = this.watched != 0
         }
     }
 

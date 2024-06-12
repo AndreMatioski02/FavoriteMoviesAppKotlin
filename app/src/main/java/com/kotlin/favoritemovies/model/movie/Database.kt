@@ -82,7 +82,7 @@ class MovieDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,
                 val movieName = getString(getColumnIndexOrThrow(DB_FIELD_MOVIE_NAME))
                 val rate = getInt(getColumnIndexOrThrow(DB_FIELD_RATE))
                 val platformToWatch = getString(getColumnIndexOrThrow(DB_FIELD_PLATFORM_TO_WATCH))
-                val watched = getInt(getColumnIndexOrThrow(DB_FIELD_WATCHED)) != 0
+                val watched = getInt(getColumnIndexOrThrow(DB_FIELD_WATCHED))
                 val categoryId = getLong(getColumnIndexOrThrow(DB_FIELD_CATEGORY_ID))
 
                 val movie = Movie(movieName, rate, platformToWatch, watched, categoryId, id)
