@@ -2,6 +2,7 @@ package com.kotlin.favoritemovies.controller
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.widget.Toast
@@ -13,10 +14,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.kotlin.favoritemovies.databinding.ActivityMovieListBinding
 import com.kotlin.favoritemovies.model.category.CategoryDataStore
+import com.kotlin.favoritemovies.model.movie.Movie
 import com.kotlin.favoritemovies.model.movie.MovieDataStore
 import com.kotlin.favoritemovies.view.MovieAdapter
 
-class MovieListActivity : AppCompatActivity() {
+class MovieListActivity : AppCompatActivity(), MovieAdapter.OnCheckboxClickListener {
 
     private lateinit var binding: ActivityMovieListBinding
     private lateinit var adapter: MovieAdapter
@@ -27,7 +29,6 @@ class MovieListActivity : AppCompatActivity() {
         if (result.resultCode == RESULT_OK) {
             result.data?.let { intent ->
                 Snackbar.make(
-                    this,
                     binding.layout,
                     "Filme ${intent.getStringExtra("movie")} adicionado com sucesso!!!",
                     Snackbar.LENGTH_LONG
@@ -41,7 +42,6 @@ class MovieListActivity : AppCompatActivity() {
         if (result.resultCode == RESULT_OK) {
             result.data?.let { intent ->
                 Snackbar.make(
-                    this,
                     binding.layout,
                     "Filme ${intent.getStringExtra("movie")} alterado com sucesso!!!",
                     Snackbar.LENGTH_LONG
@@ -57,9 +57,7 @@ class MovieListActivity : AppCompatActivity() {
         binding = ActivityMovieListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        position = intent.getIntExtra("position", -1).run {
-            this
-        }
+        position = intent.getIntExtra("position", -1)
 
         if (position != -1) {
             setData(position)
@@ -76,32 +74,33 @@ class MovieListActivity : AppCompatActivity() {
     }
 
     private fun loadRecycleView() {
-
         LinearLayoutManager(this).apply {
-            this.orientation = LinearLayoutManager.VERTICAL
+            orientation = LinearLayoutManager.VERTICAL
             binding.rcvMovies.layoutManager = this
-            adapter = MovieAdapter(MovieDataStore.movies).apply {
+            adapter = MovieAdapter(MovieDataStore.movies, this@MovieListActivity).apply {
                 binding.rcvMovies.adapter = this
             }
         }
     }
 
-    private fun configureGesture() {
+    override fun onCheckboxClick(movie: Movie, isChecked: Boolean) {
+        movie.watched = if (isChecked) 1 else 0
+        MovieDataStore.editWatchedMovie(movie)
+        Toast.makeText(this, "Filme ${movie.movieName} atualizado!", Toast.LENGTH_SHORT).show()
+    }
 
+    private fun configureGesture() {
         gesture = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
 
             override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-                binding.rcvMovies.findChildViewUnder(e.x, e.y).run {
-                    this?.let { child ->
-                        binding.rcvMovies.getChildAdapterPosition(child).apply {
-                            Intent(this@MovieListActivity, AddMovie::class.java).run {
-                                val categoryId = CategoryDataStore.getCategory(position).id
-                                putExtra("categoryId", categoryId)
-                                putExtra("categoryPosition", position)
-                                putExtra("position", this@apply)
-                                editMovieForResult.launch(this)
-                            }
-                        }
+                binding.rcvMovies.findChildViewUnder(e.x, e.y)?.let { child ->
+                    val position = binding.rcvMovies.getChildAdapterPosition(child)
+                    Intent(this@MovieListActivity, AddMovie::class.java).apply {
+                        val categoryId = CategoryDataStore.getCategory(this@MovieListActivity.position).id
+                        putExtra("categoryId", categoryId)
+                        putExtra("categoryPosition", this@MovieListActivity.position)
+                        putExtra("position", position)
+                        editMovieForResult.launch(this)
                     }
                 }
                 return super.onSingleTapConfirmed(e)
@@ -109,22 +108,18 @@ class MovieListActivity : AppCompatActivity() {
 
             override fun onLongPress(e: MotionEvent) {
                 super.onLongPress(e)
-
-                binding.rcvMovies.findChildViewUnder(e.x, e.y).run {
-                    this?.let { child ->
-                        binding.rcvMovies.getChildAdapterPosition(child).apply {
-                            val movie = MovieDataStore.getMovie(this)
-                            AlertDialog.Builder(this@MovieListActivity).run {
-                                setMessage("Tem certeza que deseja remover este filme??")
-                                setPositiveButton("Excluir") { _,_ ->
-                                    MovieDataStore.removeMovie(this@apply)
-                                    Toast.makeText(this@MovieListActivity, "Filme ${movie.movieName} removido com sucesso!!!", Toast.LENGTH_LONG).show()
-                                    adapter.notifyDataSetChanged()
-                                }
-                                setNegativeButton("Cancelar", null)
-                                show()
-                            }
+                binding.rcvMovies.findChildViewUnder(e.x, e.y)?.let { child ->
+                    val position = binding.rcvMovies.getChildAdapterPosition(child)
+                    val movie = MovieDataStore.getMovie(position)
+                    AlertDialog.Builder(this@MovieListActivity).apply {
+                        setMessage("Tem certeza que deseja remover este filme??")
+                        setPositiveButton("Excluir") { _, _ ->
+                            MovieDataStore.removeMovie(position)
+                            Toast.makeText(this@MovieListActivity, "Filme ${movie.movieName} removido com sucesso!!!", Toast.LENGTH_LONG).show()
+                            adapter.notifyDataSetChanged()
                         }
+                        setNegativeButton("Cancelar", null)
+                        show()
                     }
                 }
             }
@@ -132,13 +127,12 @@ class MovieListActivity : AppCompatActivity() {
     }
 
     private fun configureRecycleViewEvents() {
-
-        binding.rcvMovies.addOnItemTouchListener(object: RecyclerView.OnItemTouchListener {
-
+        binding.rcvMovies.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
             override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-                rv.findChildViewUnder(e.x, e.y).apply {
-                    return (this != null && gesture.onTouchEvent(e))
+                rv.findChildViewUnder(e.x, e.y)?.let {
+                    return gesture.onTouchEvent(e)
                 }
+                return false
             }
 
             override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
@@ -166,12 +160,10 @@ class MovieListActivity : AppCompatActivity() {
 
     private fun addMovie() {
         val categoryId = CategoryDataStore.getCategory(position).id
-
         val intent = Intent(this, AddMovie::class.java).apply {
             putExtra("categoryId", categoryId)
             putExtra("categoryPosition", position)
         }
-
         addMovieForResult.launch(intent)
     }
 

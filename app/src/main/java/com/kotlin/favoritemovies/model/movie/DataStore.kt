@@ -41,6 +41,17 @@ object MovieDataStore {
             Log.d("FavoriteMoviesApp", "Operação falhou: edição de dados")
         }
     }
+    fun editWatchedMovie(movie: Movie) {
+        val index = movies.indexOfFirst { it.id == movie.id  }
+        movie.id = getMovie(index).id
+        val count = database?.editMovie(movie) ?: return
+
+        if(count > 0) {
+            movies[index] = movie
+        } else {
+            Log.d("FavoriteMoviesApp", "Operação falhou: edição de dados")
+        }
+    }
 
     fun removeMovie(position: Int) {
         val movie = getMovie(position)

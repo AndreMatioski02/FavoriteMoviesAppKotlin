@@ -1,28 +1,38 @@
 package com.kotlin.favoritemovies.view
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.kotlin.favoritemovies.databinding.AdapterMovieBinding
 import com.kotlin.favoritemovies.model.movie.Movie
 
-class MovieAdapter(var movies: MutableList<Movie>) : RecyclerView.Adapter<MovieAdapter.MovieHolder>() {
+class MovieAdapter(
+    var movies: MutableList<Movie>,
+    private val onCheckboxClickListener: OnCheckboxClickListener
+) : RecyclerView.Adapter<MovieAdapter.MovieHolder>() {
+
+    interface OnCheckboxClickListener {
+        fun onCheckboxClick(movie: Movie, isChecked: Boolean)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieHolder {
-
-        AdapterMovieBinding.inflate(
-            LayoutInflater.from(parent.context), parent, false).apply {
-            return MovieHolder(this)
-        }
+        val binding = AdapterMovieBinding.inflate(
+            LayoutInflater.from(parent.context), parent, false)
+        return MovieHolder(binding)
     }
 
     override fun onBindViewHolder(holder: MovieHolder, position: Int) {
+        val movie = movies[position]
 
-        movies[position].apply {
-            holder.binding.txtMovieName.text = this.movieName
-            holder.binding.txtRate.text = this.rate.toString()
-            holder.binding.txtPlatformToWatch.text = this.platformToWatch
-            holder.binding.checkboxWatched.isChecked = this.watched != 0
+        holder.binding.apply {
+            txtMovieName.text = movie.movieName
+            txtRate.text = movie.rate.toString()
+            txtPlatformToWatch.text = movie.platformToWatch
+            checkboxWatched.isChecked = movie.watched != 0
+            checkboxWatched.setOnCheckedChangeListener { _, isChecked ->
+                onCheckboxClickListener.onCheckboxClick(movie, isChecked)
+            }
         }
     }
 
