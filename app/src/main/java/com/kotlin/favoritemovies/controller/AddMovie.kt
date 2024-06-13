@@ -27,7 +27,7 @@ class AddMovie : AppCompatActivity() {
 
         binding.btnSaveMovie.setOnClickListener {
 
-            getData()?.let { movie ->
+            getData(position)?.let { movie ->
                 saveMovie(movie)
             } ?: run {
                 showMessage("Campos inválidos!!!")
@@ -51,8 +51,7 @@ class AddMovie : AppCompatActivity() {
         Log.d("FavoriteMovieApp!", "Activity destruída")
     }
 
-    private fun getData(): Movie? {
-
+    private fun getData(position: Int): Movie? {
         val receivedCategoryIdParam = intent.getLongExtra("categoryId", -1)
 
         val movieName = binding.txtMovieName.text.toString()
@@ -62,7 +61,8 @@ class AddMovie : AppCompatActivity() {
         if (movieName.isEmpty() || moviePlatform.isEmpty())
             return null
 
-        return Movie(movieName, movieRate.toInt(), moviePlatform, 0, receivedCategoryIdParam)
+        return Movie(movieName, movieRate.toInt(), moviePlatform,
+            MovieDataStore.getMovie(position).watched, receivedCategoryIdParam)
     }
 
     private fun setData(position: Int) {

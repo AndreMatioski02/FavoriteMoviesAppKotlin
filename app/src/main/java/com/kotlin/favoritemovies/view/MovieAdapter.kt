@@ -31,6 +31,7 @@ class MovieAdapter(
             txtPlatformToWatch.text = movie.platformToWatch
             checkboxWatched.isChecked = movie.watched != 0
             checkboxWatched.setOnCheckedChangeListener { _, isChecked ->
+                holder.isCheckBoxClicked = true
                 onCheckboxClickListener.onCheckboxClick(movie, isChecked)
             }
         }
@@ -38,5 +39,7 @@ class MovieAdapter(
 
     override fun getItemCount() = movies.size
 
-    inner class MovieHolder(var binding: AdapterMovieBinding): RecyclerView.ViewHolder(binding.root)
+    inner class MovieHolder(var binding: AdapterMovieBinding): RecyclerView.ViewHolder(binding.root) {
+        var isCheckBoxClicked: Boolean = false
+    }
 }

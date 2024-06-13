@@ -95,6 +95,12 @@ class MovieListActivity : AppCompatActivity(), MovieAdapter.OnCheckboxClickListe
             override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
                 binding.rcvMovies.findChildViewUnder(e.x, e.y)?.let { child ->
                     val position = binding.rcvMovies.getChildAdapterPosition(child)
+                    val holder = binding.rcvMovies.findViewHolderForAdapterPosition(position) as? MovieAdapter.MovieHolder
+                    if (holder != null && holder.isCheckBoxClicked) {
+                        holder.isCheckBoxClicked = false
+                        return true
+                    }
+
                     Intent(this@MovieListActivity, AddMovie::class.java).apply {
                         val categoryId = CategoryDataStore.getCategory(this@MovieListActivity.position).id
                         putExtra("categoryId", categoryId)
