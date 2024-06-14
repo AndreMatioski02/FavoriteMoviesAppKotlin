@@ -53,6 +53,7 @@ class AddMovie : AppCompatActivity() {
 
     private fun getData(position: Int): Movie? {
         var movieWatchedValue = 0
+        var movieRate = "0"
 
         if(position != -1) {
             movieWatchedValue = MovieDataStore.getMovie(position).watched
@@ -60,7 +61,9 @@ class AddMovie : AppCompatActivity() {
         val receivedCategoryIdParam = intent.getLongExtra("categoryId", -1)
 
         val movieName = binding.txtMovieName.text.toString()
-        val movieRate = binding.txtRate.text.toString()
+        if(binding.txtRate.text.isNotEmpty()) {
+            movieRate = binding.txtRate.text.toString()
+        }
         val moviePlatform = binding.txtPlatform.text.toString()
 
 

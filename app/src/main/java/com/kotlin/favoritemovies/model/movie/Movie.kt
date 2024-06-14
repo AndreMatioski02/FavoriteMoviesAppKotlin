@@ -2,7 +2,7 @@ package com.kotlin.favoritemovies.model.movie
 
 class Movie(
     var movieName: String,
-    var rate: Int,
+    var rate: Int?,
     var platformToWatch: String,
     var watched: Int,
     var categoryId: Long

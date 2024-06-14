@@ -22,6 +22,7 @@ object MovieDataStore {
 
     fun addMovie(movie: Movie) {
         val id = database?.addMovie(movie) ?: return
+        movie.rate = movie.rate ?: 0
 
         if (id > 0) {
             movie.id = id
@@ -33,6 +34,7 @@ object MovieDataStore {
 
     fun editMovie(position: Int, movie: Movie) {
         movie.id = getMovie(position).id
+        movie.rate = movie.rate ?: 0
         val count = database?.editMovie(movie) ?: return
 
         if(count > 0) {

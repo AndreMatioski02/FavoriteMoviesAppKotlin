@@ -26,7 +26,11 @@ class MovieAdapter(
 
         holder.binding.apply {
             txtMovieName.text = movie.movieName
-            txtRate.text = movie.rate.toString()
+            if(movie.rate == 0) {
+                txtRate.text = " - "
+            } else {
+                txtRate.text = movie.rate.toString()
+            }
             txtPlatformToWatch.text = movie.platformToWatch
             checkboxWatched.isChecked = movie.watched != 0
             checkboxWatched.setOnCheckedChangeListener { _, isChecked ->
