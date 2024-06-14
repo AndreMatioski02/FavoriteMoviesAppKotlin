@@ -52,17 +52,23 @@ class AddMovie : AppCompatActivity() {
     }
 
     private fun getData(position: Int): Movie? {
+        var movieWatchedValue = 0
+
+        if(position != -1) {
+            movieWatchedValue = MovieDataStore.getMovie(position).watched
+        }
         val receivedCategoryIdParam = intent.getLongExtra("categoryId", -1)
 
         val movieName = binding.txtMovieName.text.toString()
         val movieRate = binding.txtRate.text.toString()
         val moviePlatform = binding.txtPlatform.text.toString()
 
+
         if (movieName.isEmpty() || moviePlatform.isEmpty())
             return null
 
         return Movie(movieName, movieRate.toInt(), moviePlatform,
-            MovieDataStore.getMovie(position).watched, receivedCategoryIdParam)
+            movieWatchedValue, receivedCategoryIdParam)
     }
 
     private fun setData(position: Int) {

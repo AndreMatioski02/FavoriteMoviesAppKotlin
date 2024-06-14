@@ -34,6 +34,7 @@ class MovieListActivity : AppCompatActivity(), MovieAdapter.OnCheckboxClickListe
                     Snackbar.LENGTH_LONG
                 ).show()
                 adapter.notifyDataSetChanged()
+                setData(position)
             }
         }
     }
@@ -47,6 +48,7 @@ class MovieListActivity : AppCompatActivity(), MovieAdapter.OnCheckboxClickListe
                     Snackbar.LENGTH_LONG
                 ).show()
                 adapter.notifyDataSetChanged()
+                setData(position)
             }
         }
     }
@@ -59,13 +61,14 @@ class MovieListActivity : AppCompatActivity(), MovieAdapter.OnCheckboxClickListe
 
         position = intent.getIntExtra("position", -1)
 
+        val categoryId = CategoryDataStore.getCategory(position).id
+
+        MovieDataStore.setContext(this, categoryId)
+
         if (position != -1) {
             setData(position)
         }
 
-        val categoryId = CategoryDataStore.getCategory(position).id
-
-        MovieDataStore.setContext(this, categoryId)
         loadRecycleView()
         configureNavigateButton()
         configureAddMovie()
@@ -115,14 +118,15 @@ class MovieListActivity : AppCompatActivity(), MovieAdapter.OnCheckboxClickListe
             override fun onLongPress(e: MotionEvent) {
                 super.onLongPress(e)
                 binding.rcvMovies.findChildViewUnder(e.x, e.y)?.let { child ->
-                    val position = binding.rcvMovies.getChildAdapterPosition(child)
-                    val movie = MovieDataStore.getMovie(position)
+                    val rcvPosition = binding.rcvMovies.getChildAdapterPosition(child)
+                    val movie = MovieDataStore.getMovie(rcvPosition)
                     AlertDialog.Builder(this@MovieListActivity).apply {
                         setMessage("Tem certeza que deseja remover este filme??")
                         setPositiveButton("Excluir") { _, _ ->
-                            MovieDataStore.removeMovie(position)
+                            MovieDataStore.removeMovie(rcvPosition)
                             Toast.makeText(this@MovieListActivity, "Filme ${movie.movieName} removido com sucesso!!!", Toast.LENGTH_LONG).show()
                             adapter.notifyDataSetChanged()
+                            setData(position)
                         }
                         setNegativeButton("Cancelar", null)
                         show()
@@ -148,7 +152,7 @@ class MovieListActivity : AppCompatActivity(), MovieAdapter.OnCheckboxClickListe
 
     private fun setData(position: Int) {
         CategoryDataStore.getCategory(position).run {
-            val text = this.categoryName
+            val text = this.categoryName + " (" + MovieDataStore.movies.size + ")"
             binding.movieCategory.setText(text)
         }
     }

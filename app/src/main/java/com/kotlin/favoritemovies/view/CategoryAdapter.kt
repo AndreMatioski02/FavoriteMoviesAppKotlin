@@ -19,7 +19,7 @@ class CategoryAdapter(var categories: MutableList<Category>) : RecyclerView.Adap
     override fun onBindViewHolder(holder: CategoryHolder, position: Int) {
 
         categories[position].apply {
-            "${this.categoryName} (${this.moviesAdded.toString()})".also { holder.binding.txtName.text = it }
+            this.categoryName.also { holder.binding.txtName.text = it }
         }
     }
 

@@ -99,7 +99,7 @@ class MovieCategoryActivity : AppCompatActivity() {
                         binding.rcvCategories.getChildAdapterPosition(child).apply {
                             val category = CategoryDataStore.getCategory(this)
                             AlertDialog.Builder(this@MovieCategoryActivity).run {
-                                setMessage("Tem certeza que deseja remover esta categoria?")
+                                setMessage("Tem certeza que deseja remover esta categoria? A listagem de filmes vinculados a ela serão perdidos.")
                                 setPositiveButton("Excluir") { _,_ ->
                                     CategoryDataStore.removeCategory(this@apply)
                                     Toast.makeText(this@MovieCategoryActivity, "Categoria ${category.categoryName} removida com sucesso!!!", Toast.LENGTH_LONG).show()
